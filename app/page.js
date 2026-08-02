@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const { data: graves, error } = await supabase
     .from("graves")
