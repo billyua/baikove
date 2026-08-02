@@ -6,10 +6,12 @@ export const dynamic = "force-dynamic";
 
 // Fallback center (used only if there are no graves yet, or none have coordinates).
 // Once you have real graves with coordinates, the map centers on them automatically.
-const DEFAULT_CENTER = [50.416753577511, 30.51109552519534]; // Baikove main entrance, as a placeholder
+const DEFAULT_CENTER = [50.4501, 30.5234]; // Kyiv, as a placeholder
 const DEFAULT_ZOOM = 17;
 
-export default async function MapPage() {
+export default async function MapPage({ searchParams }) {
+  const highlightId = searchParams?.highlight ?? null;
+
   const { data: graves, error } = await supabase
     .from("graves")
     .select(
@@ -19,7 +21,14 @@ export default async function MapPage() {
     .not("longitude", "is", null);
 
   let center = DEFAULT_CENTER;
-  if (graves && graves.length > 0) {
+  let zoom = DEFAULT_ZOOM;
+
+  const highlightedGrave = graves?.find((g) => g.id === highlightId);
+
+  if (highlightedGrave) {
+    center = [highlightedGrave.latitude, highlightedGrave.longitude];
+    zoom = 20;
+  } else if (graves && graves.length > 0) {
     const avgLat =
       graves.reduce((sum, g) => sum + g.latitude, 0) / graves.length;
     const avgLng =
@@ -45,7 +54,12 @@ export default async function MapPage() {
       )}
 
       {!error && graves && graves.length > 0 && (
-        <MapLoader graves={graves} center={center} zoom={DEFAULT_ZOOM} />
+        <MapLoader
+          graves={graves}
+          center={center}
+          zoom={zoom}
+          highlightId={highlightId}
+        />
       )}
     </main>
   );
