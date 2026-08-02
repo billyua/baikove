@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 
 export default async function HomePage() {
@@ -10,6 +11,9 @@ export default async function HomePage() {
     <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
       <h1>Меморіальний цвинтар</h1>
       <p>Це тестова сторінка, яка перевіряє з&apos;єднання з базою даних.</p>
+      <p>
+        <Link href="/directory">Перейти до каталогу поховань →</Link>
+      </p>
 
       {error && (
         <p style={{ color: "red" }}>
