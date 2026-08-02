@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // Fallback center (used only if there are no graves yet, or none have coordinates).
 // Once you have real graves with coordinates, the map centers on them automatically.
-const DEFAULT_CENTER = [50.4501, 30.5234]; // Kyiv, as a placeholder
+const DEFAULT_CENTER = [50.416753577511, 30.51109552519534]; // Baikove main entrance, as a placeholder
 const DEFAULT_ZOOM = 17;
 
 export default async function MapPage() {
