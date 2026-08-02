@@ -45,6 +45,12 @@ export default async function HomePage() {
           </ul>
         </>
       )}
+
+      <p style={{ marginTop: "60px", fontSize: "13px" }}>
+        <Link href="/admin/login" style={{ color: "#999" }}>
+          Вхід для адміністратора
+        </Link>
+      </p>
     </main>
   );
 }

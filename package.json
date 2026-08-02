@@ -14,6 +14,9 @@
     "@supabase/supabase-js": "^2.45.0",
     "@tanstack/react-table": "^8.20.1",
     "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1"
+    "react-leaflet": "^4.2.1",
+    "@tiptap/react": "^2.5.9",
+    "@tiptap/starter-kit": "^2.5.9",
+    "@tiptap/extension-link": "^2.5.9"
   }
 }
