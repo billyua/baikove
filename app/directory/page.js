@@ -2,6 +2,8 @@ import { supabase } from "../../lib/supabaseClient";
 import GravesTable from "../../components/GravesTable";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function DirectoryPage() {
   const { data: graves, error } = await supabase
     .from("graves")
