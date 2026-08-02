@@ -16,6 +16,9 @@ export default async function HomePage() {
       <p>
         <Link href="/directory">Перейти до каталогу поховань →</Link>
       </p>
+      <p>
+        <Link href="/map">Перейти до карти цвинтаря →</Link>
+      </p>
 
       {error && (
         <p style={{ color: "red" }}>
