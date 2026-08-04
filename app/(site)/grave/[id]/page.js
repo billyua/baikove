@@ -18,7 +18,7 @@ export default async function GravePage({ params }) {
     return (
       <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
         <p>
-          <Link href="/directory">← До каталогу</Link>
+          <Link href="/directory">← До реєстру</Link>
         </p>
         <h1>Поховання не знайдено</h1>
         <p>Можливо, посилання застаріле, або запис було видалено.</p>
@@ -33,7 +33,7 @@ export default async function GravePage({ params }) {
   return (
     <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
       <p>
-        <Link href="/directory">← До каталогу</Link>
+        <Link href="/directory">← До реєстру</Link>
         {" · "}
         <Link href={`/?highlight=${grave.id}`}>Показати на карті →</Link>
       </p>
