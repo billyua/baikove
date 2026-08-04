@@ -24,7 +24,7 @@ export default async function DirectoryPage() {
       <p>
         <Link href="/">← На головну</Link>
       </p>
-      <h1>Каталог поховань</h1>
+      <h1>Реєстр поховань</h1>
 
       {error && (
         <p style={{ color: "red" }}>Помилка завантаження даних: {error}</p>
