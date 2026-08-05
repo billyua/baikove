@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
+import CoordinatePicker from "./CoordinatePicker";
 import { buildGraveSlugBase } from "../lib/transliterate";
+
+const DEFAULT_LATITUDE = 50.418671547541706;
+const DEFAULT_LONGITUDE = 30.51021526307843;
 
 function fieldsFromGrave(grave) {
   return {
@@ -16,8 +20,10 @@ function fieldsFromGrave(grave) {
     occupation: grave?.occupation || "",
     grave_section: grave?.grave_section || "",
     direction_text: grave?.direction_text || "",
-    latitude: grave?.latitude ?? "",
-    longitude: grave?.longitude ?? "",
+    latitude:
+      grave?.latitude != null ? String(grave.latitude) : DEFAULT_LATITUDE.toFixed(6),
+    longitude:
+      grave?.longitude != null ? String(grave.longitude) : DEFAULT_LONGITUDE.toFixed(6),
   };
 }
 
@@ -90,6 +96,21 @@ export default function GraveForm({
     setSlugTouched(true);
     setSlug(e.target.value);
   };
+
+  const handleMapMove = (lat, lng) => {
+    setFields((prev) => ({
+      ...prev,
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6),
+    }));
+  };
+
+  const mapLatitude = Number.isFinite(parseFloat(fields.latitude))
+    ? parseFloat(fields.latitude)
+    : DEFAULT_LATITUDE;
+  const mapLongitude = Number.isFinite(parseFloat(fields.longitude))
+    ? parseFloat(fields.longitude)
+    : DEFAULT_LONGITUDE;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -341,27 +362,43 @@ export default function GraveForm({
         />
       </label>
 
-      <label>
-        Широта (latitude) *
-        <input
-          name="latitude"
-          value={fields.latitude}
-          onChange={handleChange}
-          placeholder="напр. 50.4501"
-          style={inputStyle}
-        />
-      </label>
-
-      <label>
-        Довгота (longitude) *
-        <input
-          name="longitude"
-          value={fields.longitude}
-          onChange={handleChange}
-          placeholder="напр. 30.5234"
-          style={inputStyle}
-        />
-      </label>
+      <div>
+        <p style={{ margin: "0 0 8px", fontWeight: "bold" }}>
+          Розташування могили *
+        </p>
+        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <div style={{ flex: "1 1 200px", display: "flex", flexDirection: "column", gap: "14px" }}>
+            <label>
+              Широта (latitude)
+              <input
+                name="latitude"
+                value={fields.latitude}
+                onChange={handleChange}
+                style={inputStyle}
+              />
+            </label>
+            <label>
+              Довгота (longitude)
+              <input
+                name="longitude"
+                value={fields.longitude}
+                onChange={handleChange}
+                style={inputStyle}
+              />
+            </label>
+          </div>
+          <div style={{ flex: "1 1 260px", maxWidth: "320px" }}>
+            <CoordinatePicker
+              latitude={mapLatitude}
+              longitude={mapLongitude}
+              onChange={handleMapMove}
+            />
+            <span style={{ fontSize: "13px", color: "#666" }}>
+              Перемістіть карту, щоб позначка в центрі вказувала на могилу.
+            </span>
+          </div>
+        </div>
+      </div>
 
       <button type="submit" disabled={submitting} style={buttonStyle}>
         {submitting
