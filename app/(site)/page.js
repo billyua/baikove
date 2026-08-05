@@ -1,5 +1,6 @@
 import { sql } from "../../lib/db";
 import MapLoader from "../../components/MapLoader";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +36,10 @@ export default async function HomePage({ searchParams }) {
 
   return (
     <main style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>Карта цвинтаря</h1>
+      <p>
+        <Link href="/directory">До реєстру →</Link>
+      </p>
+      <h1>Мапа поховань</h1>
 
       {error && (
         <p style={{ color: "red" }}>Помилка завантаження даних: {error}</p>

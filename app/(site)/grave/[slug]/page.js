@@ -1,5 +1,6 @@
 import { sql } from "../../../../lib/db";
 import { getSession } from "../../../../lib/session";
+import MapLoader from "../../../../components/MapLoader";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -32,12 +33,31 @@ export default async function GravePage({ params }) {
     .filter(Boolean)
     .join(" ");
 
+  const years = [grave.birth_year, grave.death_year].filter(
+    (y) => y !== null && y !== undefined
+  );
+  const yearsText = years.length === 2
+    ? `${grave.birth_year}–${grave.death_year}`
+    : years.join("");
+
+  // Map graves for the embedded map — same data shape as the homepage map.
+  let mapGraves = [];
+  let mapError = null;
+  try {
+    mapGraves = await sql`
+      select id, slug, last_name, first_name, birth_year, death_year, occupation,
+             latitude, longitude
+      from graves
+      where latitude is not null and longitude is not null
+    `;
+  } catch (err) {
+    mapError = err.message;
+  }
+
   return (
     <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
       <p>
         <Link href="/directory">← До реєстру</Link>
-        {" · "}
-        <Link href={`/?highlight=${grave.slug}`}>Показати на карті →</Link>
         {session.isLoggedIn && (
           <>
             {" · "}
@@ -48,17 +68,18 @@ export default async function GravePage({ params }) {
 
       <h1>{fullName}</h1>
 
-      <p style={{ fontSize: "18px", color: "#444" }}>
-        {grave.occupation}
-        <br />
-        {grave.birth_year} – {grave.death_year}
-        {grave.grave_section && (
-          <>
-            <br />
-            Сектор: {grave.grave_section}
-          </>
-        )}
-      </p>
+      {yearsText && (
+        <p style={{ fontSize: "18px", color: "#444", margin: "4px 0" }}>
+          ({yearsText})
+        </p>
+      )}
+
+      {grave.description && (
+        <div
+          style={{ lineHeight: "1.6", margin: "20px 0" }}
+          dangerouslySetInnerHTML={{ __html: grave.description }}
+        />
+      )}
 
       {grave.photo_url && (
         <img
@@ -73,20 +94,14 @@ export default async function GravePage({ params }) {
         />
       )}
 
-      {grave.description && (
+      {(grave.grave_section || grave.direction_text || grave.direction_scheme_url) && (
         <section style={{ margin: "24px 0" }}>
-          <h2>Біографія</h2>
-          <div
-            style={{ lineHeight: "1.6" }}
-            dangerouslySetInnerHTML={{ __html: grave.description }}
-          />
-        </section>
-      )}
+          <h2>Як відвідати могилу</h2>
 
-      {(grave.direction_text || grave.direction_scheme_url) && (
-        <section style={{ margin: "24px 0" }}>
-          <h2>Як знайти могилу від головного входу</h2>
+          {grave.grave_section && <p>Ділянка: {grave.grave_section}</p>}
+
           {grave.direction_text && <p>{grave.direction_text}</p>}
+
           {grave.direction_scheme_url && (
             <img
               src={grave.direction_scheme_url}
@@ -102,11 +117,19 @@ export default async function GravePage({ params }) {
         </section>
       )}
 
-      <p>
-        <Link href={`/?highlight=${grave.slug}`}>
-          Показати цю могилу на інтерактивній карті →
-        </Link>
-      </p>
+      <section style={{ margin: "24px 0" }}>
+        {mapError && (
+          <p style={{ color: "red" }}>Помилка завантаження карти: {mapError}</p>
+        )}
+        {!mapError && (
+          <MapLoader
+            graves={mapGraves}
+            center={[Number(grave.latitude), Number(grave.longitude)]}
+            zoom={20}
+            highlightSlug={grave.slug}
+          />
+        )}
+      </section>
     </main>
   );
 }

@@ -22,7 +22,7 @@ export default async function DirectoryPage() {
   return (
     <main style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
       <p>
-        <Link href="/">← На головну</Link>
+        <Link href="/">← До мапи</Link>
       </p>
       <h1>Реєстр поховань</h1>
 

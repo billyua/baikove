@@ -20,7 +20,7 @@ const columns = [
   columnHelper.accessor("birth_year", { header: "Рік народження" }),
   columnHelper.accessor("death_year", { header: "Рік смерті" }),
   columnHelper.accessor("occupation", { header: "Рід занять" }),
-  columnHelper.accessor("grave_section", { header: "Сектор" }),
+  columnHelper.accessor("grave_section", { header: "Ділянка" }),
 ];
 
 export default function GravesTable({ graves }) {

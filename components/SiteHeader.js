@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const navItems = [
   { href: "/", label: "Мапа" },
@@ -34,25 +35,13 @@ export default function SiteHeader() {
           color: "inherit",
         }}
       >
-        {/* Placeholder logo — replace with the real logo image later */}
-        <div
-          aria-hidden="true"
-          style={{
-            width: "44px",
-            height: "44px",
-            borderRadius: "8px",
-            backgroundColor: "#933E2A",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-            fontSize: "16px",
-            flexShrink: 0,
-          }}
-        >
-          БК
-        </div>
+        <Image
+          src="/logo.png"
+          alt="Байкове кладовище. Імена"
+          width={60}
+          height={60}
+          style={{ flexShrink: 0 }}
+        />
         <span style={{ fontSize: "18px", fontWeight: "bold" }}>
           Байкове кладовище. Імена
         </span>
