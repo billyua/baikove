@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "../../lib/session";
-import AdminForm from "../../components/AdminForm";
+import GraveForm from "../../components/GraveForm";
 import LogoutButton from "../../components/LogoutButton";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,7 @@ export default async function AdminPage() {
           <LogoutButton />
         </div>
       </div>
-      <AdminForm />
+      <GraveForm mode="create" />
     </main>
   );
 }

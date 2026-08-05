@@ -1,9 +1,11 @@
 import { sql } from "../../../../lib/db";
+import { getSession } from "../../../../lib/session";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function GravePage({ params }) {
+  const session = await getSession();
   let grave = null;
   let error = null;
 
@@ -36,6 +38,12 @@ export default async function GravePage({ params }) {
         <Link href="/directory">← До реєстру</Link>
         {" · "}
         <Link href={`/?highlight=${grave.slug}`}>Показати на карті →</Link>
+        {session.isLoggedIn && (
+          <>
+            {" · "}
+            <Link href={`/grave/${grave.slug}/edit`}>Редагувати →</Link>
+          </>
+        )}
       </p>
 
       <h1>{fullName}</h1>

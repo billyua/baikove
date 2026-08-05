@@ -3,18 +3,7 @@ import { randomUUID } from "crypto";
 import { sql } from "../../../lib/db";
 import { getSession } from "../../../lib/session";
 import { buildGraveSlugBase, slugify } from "../../../lib/transliterate";
-
-async function ensureUniqueSlug(baseSlug) {
-  let candidate = baseSlug;
-  let suffix = 2;
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const rows = await sql`select 1 from graves where slug = ${candidate} limit 1`;
-    if (rows.length === 0) return candidate;
-    candidate = `${baseSlug}-${suffix}`;
-    suffix += 1;
-  }
-}
+import { ensureUniqueSlug } from "../../../lib/slugServer";
 
 export async function POST(request) {
   const session = await getSession();
@@ -40,8 +29,6 @@ export async function POST(request) {
 
   const id = randomUUID();
 
-  // Use the admin-provided slug if they edited it, otherwise auto-generate
-  // from (birth year)-(death year)-(transliterated surname).
   const rawSlug =
     body.slug && body.slug.trim()
       ? body.slug
