@@ -7,8 +7,8 @@ const roboto = Roboto({
 });
 
 export const metadata = {
-  title: "Меморіальний цвинтар",
-  description: "Знайдіть могили відомих людей на цвинтарі",
+  title: "Байкове кладовище. Імена",
+  description: "Реєстр і мапа поховань на Байковому кладовищі",
 };
 
 export default function RootLayout({ children }) {
