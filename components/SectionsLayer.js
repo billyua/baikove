@@ -19,13 +19,60 @@ const hoverStyle = {
   fillOpacity: 0.12,
 };
 
+// How many levels of nested arrays each geometry type should have before
+// reaching a raw [lng, lat] pair.
+const DEPTH_BY_TYPE = {
+  Point: 0,
+  MultiPoint: 1,
+  LineString: 1,
+  MultiLineString: 2,
+  Polygon: 2,
+  MultiPolygon: 3,
+};
+
+function isValidCoordArray(arr, depth) {
+  if (!Array.isArray(arr) || arr.length === 0) return false;
+  if (depth === 0) {
+    return (
+      arr.length >= 2 &&
+      typeof arr[0] === "number" &&
+      typeof arr[1] === "number" &&
+      Number.isFinite(arr[0]) &&
+      Number.isFinite(arr[1])
+    );
+  }
+  return arr.every((item) => isValidCoordArray(item, depth - 1));
+}
+
+// Guards against features with missing/empty/malformed geometry, which
+// otherwise crash Leaflet entirely ("latlngs not passed") and take the
+// whole map down with them. Invalid features are simply skipped.
+function hasValidGeometry(feature) {
+  const geometry = feature?.geometry;
+  if (!geometry || !geometry.type || !geometry.coordinates) return false;
+  const depth = DEPTH_BY_TYPE[geometry.type];
+  if (depth === undefined) return false;
+  return isValidCoordArray(geometry.coordinates, depth);
+}
+
 export default function SectionsLayer() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     fetch("/data/sections.geojson")
       .then((res) => res.json())
-      .then(setData)
+      .then((geojson) => {
+        const invalid = (geojson.features || []).filter(
+          (f) => !hasValidGeometry(f)
+        );
+        if (invalid.length > 0) {
+          console.warn(
+            `SectionsLayer: skipping ${invalid.length} feature(s) with invalid geometry:`,
+            invalid.map((f) => f.properties)
+          );
+        }
+        setData(geojson);
+      })
       .catch(() => setData(null));
   }, []);
 
@@ -53,5 +100,12 @@ export default function SectionsLayer() {
     });
   }
 
-  return <GeoJSON data={data} style={() => baseStyle} onEachFeature={onEachFeature} />;
+  return (
+    <GeoJSON
+      data={data}
+      filter={hasValidGeometry}
+      style={() => baseStyle}
+      onEachFeature={onEachFeature}
+    />
+  );
 }
