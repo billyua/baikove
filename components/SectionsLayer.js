@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { GeoJSON } from "react-leaflet";
 
 const baseStyle = {
-  color: "#933E2A",
+  color: "#000000",
   weight: 1.5,
   opacity: 0.5,
   dashArray: "1, 6",
