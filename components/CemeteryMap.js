@@ -6,6 +6,7 @@ import L from "leaflet";
 import Link from "next/link";
 import "leaflet/dist/leaflet.css";
 import SectionsLayer from "./SectionsLayer";
+import MemorialsLayer from "./MemorialsLayer";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -62,10 +63,11 @@ function GraveMarker({ grave, isHighlighted }) {
 
 export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
   const [showSections, setShowSections] = useState(true);
+  const [showMemorials, setShowMemorials] = useState(true);
 
   return (
     <div style={{ position: "relative" }}>
-      <label
+      <div
         style={{
           position: "absolute",
           top: "10px",
@@ -74,21 +76,45 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
           background: "rgba(248, 248, 240, 0.9)",
           padding: "6px 10px",
           borderRadius: "6px",
-          fontSize: "14px",
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          cursor: "pointer",
           boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
         }}
       >
-        <input
-          type="checkbox"
-          checked={showSections}
-          onChange={(e) => setShowSections(e.target.checked)}
-        />
-        Показати ділянки
-      </label>
+        <label
+          style={{
+            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showSections}
+            onChange={(e) => setShowSections(e.target.checked)}
+          />
+          Показати ділянки
+        </label>
+        <label
+          style={{
+            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showMemorials}
+            onChange={(e) => setShowMemorials(e.target.checked)}
+          />
+          Показати об&apos;єкти
+        </label>
+      </div>
 
       <MapContainer
         center={center}
@@ -101,6 +127,7 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
         />
 
         {showSections && <SectionsLayer />}
+        {showMemorials && <MemorialsLayer />}
 
         {graves.map((grave) => (
           <GraveMarker
