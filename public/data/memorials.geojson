@@ -4,7 +4,7 @@
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 {"type":"Feature","properties":{"name":"Центральна</br>алея"},"geometry":{"type":"Point","coordinates":[30.510606354895447,50.417339723106323]}},
-{"type":"Feature","properties":{"name":"Вознесенська церква"},"geometry":{"type":"Point","coordinates":[30.510018290601142,50.4184503372311]}},
+{"type":"Feature","properties":{"name":"Вознесенська</br>церква"},"geometry":{"type":"Point","coordinates":[30.510018290601142,50.4184503372311]}},
 {"type":"Feature","properties":{"name":"Крематорій"},"geometry":{"type":"Point","coordinates":[30.502279424189293,50.415188715096512]}},
 {"type":"Feature","properties":{"name":"Польським</br>легіонерам"},"geometry":{"type":"Point","coordinates":[30.500180527199518,50.416907949688195]}},
 {"type":"Feature","properties":{"name":"Меморіал</br>ассирійцям"},"geometry":{"type":"Point","coordinates":[30.509022387300561,50.417759129200249]}},
