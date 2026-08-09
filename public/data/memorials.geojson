@@ -3,8 +3,8 @@
 "name": "memorials",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
-{"type":"Feature","properties":{"name":"Каплиця Вітте"},"geometry":{"type":"Point","coordinates":[30.509122761218812,50.415828974459295]}},
-{"type":"Feature","properties":{"name":"Вознесенська</br>церква"},"geometry":{"type":"Point","coordinates":[30.510018290601142,50.4184503372311]}},
+{"type":"Feature","properties":{"name":"Центральна</br>алея"},"geometry":{"type":"Point","coordinates":[30.510606354895447,50.417339723106323]}},
+{"type":"Feature","properties":{"name":"Вознесенська церква"},"geometry":{"type":"Point","coordinates":[30.510018290601142,50.4184503372311]}},
 {"type":"Feature","properties":{"name":"Крематорій"},"geometry":{"type":"Point","coordinates":[30.502279424189293,50.415188715096512]}},
 {"type":"Feature","properties":{"name":"Польським</br>легіонерам"},"geometry":{"type":"Point","coordinates":[30.500180527199518,50.416907949688195]}},
 {"type":"Feature","properties":{"name":"Меморіал</br>ассирійцям"},"geometry":{"type":"Point","coordinates":[30.509022387300561,50.417759129200249]}},
@@ -13,6 +13,7 @@
 {"type":"Feature","properties":{"name":"Православні</br>ворота"},"geometry":{"type":"Point","coordinates":[30.511020350666136,50.416706802798338]}},
 {"type":"Feature","properties":{"name":"Алея сучасних</br>знаменитостей"},"geometry":{"type":"Point","coordinates":[30.502013377335249,50.417080207781943]}},
 {"type":"Feature","properties":{"name":"Ворота</br>старого</br>цвинтаря"},"geometry":{"type":"Point","coordinates":[30.509289105184241,50.416119982329555]}},
-{"type":"Feature","properties":{"name":"Могили</br>воїнів ВВВ"},"geometry":{"type":"Point","coordinates":[30.506098857004652,50.420160894615726]}}
+{"type":"Feature","properties":{"name":"Могили</br>воїнів ВВВ"},"geometry":{"type":"Point","coordinates":[30.506098857004652,50.420160894615726]}},
+{"type":"Feature","properties":{"name":"Каплиця Вітте"},"geometry":{"type":"Point","coordinates":[30.509122761218812,50.415828974459295]}}
 ]
 }
