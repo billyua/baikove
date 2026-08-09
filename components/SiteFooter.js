@@ -13,7 +13,7 @@ export default function SiteFooter() {
       <p style={{ margin: 0 }}>
         © 2026 &quot;Байкове кладовище. Імена&quot;.
         <br />
-        Цей твір ліцензовано за міжнародною ліцензією Creative Commons CC0 1.0
+        Цей сайт ліцензовано за міжнародною ліцензією Creative Commons CC0 1.0
         Універсальна (Суспільне надбання).
       </p>
     </footer>
