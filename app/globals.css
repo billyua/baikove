@@ -1,0 +1,40 @@
+.section-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #933e2a;
+  font-weight: 600;
+  font-size: 13px;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+  pointer-events: none;
+}
+
+.section-label-hover {
+  font-weight: 900;
+  font-size: 15px;
+}
+
+.leaflet-tooltip-center::before {
+  display: none;
+}
+
+.memorial-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #933e2a;
+  font-weight: 600;
+  font-size: 12px;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+  cursor: pointer;
+}
+
+.memorial-label-hover {
+  font-weight: 900;
+}
+
+.leaflet-tooltip-top::before {
+  display: none;
+}
