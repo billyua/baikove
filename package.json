@@ -14,7 +14,6 @@
     "@neondatabase/serverless": "^0.10.1",
     "iron-session": "^8.0.3",
     "bcryptjs": "^2.4.3",
-    "@tanstack/react-table": "^8.20.1",
     "leaflet": "^1.9.4",
     "react-leaflet": "^4.2.1",
     "@tiptap/react": "^2.5.9",

@@ -1,119 +1,83 @@
-"use client";
-
-import { useState, useMemo } from "react";
 import Link from "next/link";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  flexRender,
-  createColumnHelper,
-} from "@tanstack/react-table";
-
-const columnHelper = createColumnHelper();
+import { buildDirectoryHref } from "../lib/directoryUrl";
 
 const columns = [
-  columnHelper.accessor("last_name", { header: "Прізвище" }),
-  columnHelper.accessor("first_name", { header: "Ім'я" }),
-  columnHelper.accessor("middle_name", { header: "По батькові" }),
-  columnHelper.accessor("birth_year", { header: "Рік народження" }),
-  columnHelper.accessor("death_year", { header: "Рік смерті" }),
-  columnHelper.accessor("occupation", { header: "Рід занять" }),
-  columnHelper.accessor("grave_section", { header: "Ділянка" }),
+  { key: "last_name", label: "Прізвище" },
+  { key: "first_name", label: "Ім'я" },
+  { key: "middle_name", label: "По батькові" },
+  { key: "birth_year", label: "Рік народження" },
+  { key: "death_year", label: "Рік смерті" },
+  { key: "occupation", label: "Рід занять" },
+  { key: "grave_section", label: "Ділянка" },
 ];
 
-export default function GravesTable({ graves }) {
-  const [sorting, setSorting] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+export default function GravesTable({ graves, currentParams }) {
+  const activeSort = currentParams.sort || "last_name";
+  const activeDir = currentParams.dir === "desc" ? "desc" : "asc";
 
-  const data = useMemo(() => graves, [graves]);
-
-  const table = useReactTable({
-    data,
-    columns,
-    state: { sorting, globalFilter },
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
+  function headerHref(columnKey) {
+    const isActive = activeSort === columnKey;
+    const nextDir = isActive && activeDir === "asc" ? "desc" : "asc";
+    return buildDirectoryHref(currentParams, {
+      sort: columnKey,
+      dir: nextDir,
+      page: "1",
+    });
+  }
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Пошук..."
-        value={globalFilter ?? ""}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-        style={{
-          padding: "8px 12px",
-          fontSize: "16px",
-          width: "100%",
-          maxWidth: "400px",
-          marginBottom: "16px",
-          boxSizing: "border-box",
-        }}
-      />
-
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    onClick={header.column.getToggleSortingHandler()}
-                    style={{
-                      cursor: "pointer",
-                      textAlign: "left",
-                      padding: "10px",
-                      borderBottom: "2px solid #333",
-                      userSelect: "none",
-                      whiteSpace: "nowrap",
-                    }}
+    <div style={{ overflowX: "auto" }}>
+      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <thead>
+          <tr>
+            {columns.map((col) => {
+              const isActive = activeSort === col.key;
+              return (
+                <th key={col.key} style={thStyle}>
+                  <Link
+                    href={headerHref(col.key)}
+                    style={{ color: "inherit", textDecoration: "none" }}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {{
-                      asc: " ▲",
-                      desc: " ▼",
-                    }[header.column.getIsSorted()] ?? ""}
-                  </th>
-                ))}
-                <th style={{ borderBottom: "2px solid #333" }}></th>
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    style={{ padding: "10px", borderBottom: "1px solid #ddd" }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-                <td style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
-                  <Link href={`/grave/${row.original.slug}`}>Переглянути</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    {col.label}
+                    {isActive ? (activeDir === "asc" ? " ▲" : " ▼") : ""}
+                  </Link>
+                </th>
+              );
+            })}
+            <th style={thStyle}></th>
+          </tr>
+        </thead>
+        <tbody>
+          {graves.map((grave) => (
+            <tr key={grave.id}>
+              <td style={tdStyle}>{grave.last_name}</td>
+              <td style={tdStyle}>{grave.first_name}</td>
+              <td style={tdStyle}>{grave.middle_name}</td>
+              <td style={tdStyle}>{grave.birth_year}</td>
+              <td style={tdStyle}>{grave.death_year}</td>
+              <td style={tdStyle}>{grave.occupation}</td>
+              <td style={tdStyle}>{grave.grave_section}</td>
+              <td style={tdStyle}>
+                <Link href={`/grave/${grave.slug}`}>Переглянути</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-        {table.getRowModel().rows.length === 0 && (
-          <p style={{ padding: "16px", color: "#666" }}>
-            Нічого не знайдено.
-          </p>
-        )}
-      </div>
+      {graves.length === 0 && (
+        <p style={{ padding: "16px", color: "#666" }}>Нічого не знайдено.</p>
+      )}
     </div>
   );
 }
+
+const thStyle = {
+  cursor: "pointer",
+  textAlign: "left",
+  padding: "10px",
+  borderBottom: "2px solid #333",
+  whiteSpace: "nowrap",
+};
+
+const tdStyle = { padding: "10px", borderBottom: "1px solid #ddd" };
