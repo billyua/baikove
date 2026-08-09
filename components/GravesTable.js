@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { buildDirectoryHref } from "../lib/directoryUrl";
 
 const columns = [
@@ -12,6 +15,7 @@ const columns = [
 ];
 
 export default function GravesTable({ graves, currentParams }) {
+  const router = useRouter();
   const activeSort = currentParams.sort || "last_name";
   const activeDir = currentParams.dir === "desc" ? "desc" : "asc";
 
@@ -44,12 +48,16 @@ export default function GravesTable({ graves, currentParams }) {
                 </th>
               );
             })}
-            <th style={thStyle}></th>
           </tr>
         </thead>
         <tbody>
           {graves.map((grave) => (
-            <tr key={grave.id}>
+            <tr
+              key={grave.id}
+              className="grave-row"
+              onClick={() => router.push(`/grave/${grave.slug}`)}
+              style={{ cursor: "pointer" }}
+            >
               <td style={tdStyle}>{grave.last_name}</td>
               <td style={tdStyle}>{grave.first_name}</td>
               <td style={tdStyle}>{grave.middle_name}</td>
@@ -57,9 +65,6 @@ export default function GravesTable({ graves, currentParams }) {
               <td style={tdStyle}>{grave.death_year}</td>
               <td style={tdStyle}>{grave.occupation}</td>
               <td style={tdStyle}>{grave.grave_section}</td>
-              <td style={tdStyle}>
-                <Link href={`/grave/${grave.slug}`}>Переглянути</Link>
-              </td>
             </tr>
           ))}
         </tbody>
