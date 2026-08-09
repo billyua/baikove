@@ -38,3 +38,7 @@
 .leaflet-tooltip-top::before {
   display: none;
 }
+
+.grave-row:hover {
+  background-color: rgba(147, 62, 42, 0.08);
+}
