@@ -79,6 +79,12 @@ export default async function DirectoryPage({ searchParams }) {
     page: String(currentPage),
   };
 
+  const isFiltered =
+    currentParams.q !== "" ||
+    currentParams.sort !== "last_name" ||
+    currentParams.dir !== "asc" ||
+    currentParams.page !== "1";
+
   return (
     <main style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}>
       <p>
@@ -93,8 +99,21 @@ export default async function DirectoryPage({ searchParams }) {
       {!error && (
         <>
           <DirectorySearch currentParams={currentParams} />
-          <p style={{ color: "#666", fontSize: "14px" }}>
-            Знайдено записів: {totalCount}
+          <p
+            style={{
+              color: "#666",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <span>Знайдено записів: {totalCount}</span>
+            {isFiltered && (
+              <Link href="/directory" style={{ color: "#933E2A" }}>
+                Очистити ⨯
+              </Link>
+            )}
           </p>
           <GravesTable graves={graves} currentParams={currentParams} />
           <Pagination
