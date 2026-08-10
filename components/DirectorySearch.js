@@ -11,6 +11,13 @@ export default function DirectorySearch({ currentParams }) {
   const isFirstRender = useRef(true);
 
   useEffect(() => {
+    // Keep the input in sync when the search term changes from *outside*
+    // this component — e.g. the "Очистити" reset link, or the back button.
+    setValue(currentParams.q || "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentParams.q]);
+
+  useEffect(() => {
     // Don't navigate on mount — only when the admin actually types.
     if (isFirstRender.current) {
       isFirstRender.current = false;
