@@ -55,7 +55,7 @@ function hasValidGeometry(feature) {
   return isValidCoordArray(geometry.coordinates, depth);
 }
 
-export default function SectionsLayer() {
+export default function SectionsLayer({ onSectionClick }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -97,6 +97,10 @@ export default function SectionsLayer() {
       layer.setStyle(baseStyle);
       const tooltipEl = layer.getTooltip()?.getElement();
       if (tooltipEl) tooltipEl.classList.remove("section-label-hover");
+    });
+
+    layer.on("click", () => {
+      if (onSectionClick) onSectionClick(number);
     });
   }
 

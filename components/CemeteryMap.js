@@ -7,6 +7,7 @@ import Link from "next/link";
 import "leaflet/dist/leaflet.css";
 import SectionsLayer from "./SectionsLayer";
 import MemorialsLayer from "./MemorialsLayer";
+import SectionWidget from "./SectionWidget";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -64,6 +65,32 @@ function GraveMarker({ grave, isHighlighted }) {
 export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
   const [showSections, setShowSections] = useState(true);
   const [showMemorials, setShowMemorials] = useState(true);
+  const [selectedSection, setSelectedSection] = useState(null);
+
+  function handleSectionClick(sectionNumber) {
+    const gravesInSection = graves.filter(
+      (g) => g.grave_section && String(g.grave_section).trim() === String(sectionNumber).trim()
+    );
+
+    if (gravesInSection.length === 0) {
+      // Only close an already-open widget; clicking an empty section while
+      // nothing is open should do nothing at all.
+      if (selectedSection !== null) setSelectedSection(null);
+      return;
+    }
+
+    setSelectedSection(sectionNumber);
+  }
+
+  const sectionGraves = selectedSection
+    ? graves
+        .filter(
+          (g) =>
+            g.grave_section &&
+            String(g.grave_section).trim() === String(selectedSection).trim()
+        )
+        .sort((a, b) => a.last_name.localeCompare(b.last_name, "uk"))
+    : [];
 
   return (
     <div style={{ position: "relative" }}>
@@ -73,47 +100,66 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
           top: "10px",
           right: "10px",
           zIndex: 1000,
-          background: "rgba(248, 248, 240, 0.9)",
-          padding: "6px 10px",
-          borderRadius: "6px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
           display: "flex",
           flexDirection: "column",
-          gap: "4px",
+          alignItems: "flex-end",
+          gap: "10px",
+          maxHeight: "580px",
         }}
       >
-        <label
+        <div
           style={{
-            fontSize: "14px",
+            background: "rgba(248, 248, 240, 0.9)",
+            padding: "6px 10px",
+            borderRadius: "6px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
             display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            cursor: "pointer",
+            flexDirection: "column",
+            gap: "4px",
+            flexShrink: 0,
           }}
         >
-          <input
-            type="checkbox"
-            checked={showSections}
-            onChange={(e) => setShowSections(e.target.checked)}
+          <label
+            style={{
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={showSections}
+              onChange={(e) => setShowSections(e.target.checked)}
+            />
+            Показати ділянки
+          </label>
+          <label
+            style={{
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={showMemorials}
+              onChange={(e) => setShowMemorials(e.target.checked)}
+            />
+            Показати об&apos;єкти
+          </label>
+        </div>
+
+        {selectedSection && sectionGraves.length > 0 && (
+          <SectionWidget
+            sectionNumber={selectedSection}
+            graves={sectionGraves}
+            onClose={() => setSelectedSection(null)}
           />
-          Показати ділянки
-        </label>
-        <label
-          style={{
-            fontSize: "14px",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            cursor: "pointer",
-          }}
-        >
-          <input
-            type="checkbox"
-            checked={showMemorials}
-            onChange={(e) => setShowMemorials(e.target.checked)}
-          />
-          Показати об&apos;єкти
-        </label>
+        )}
       </div>
 
       <MapContainer
@@ -126,7 +172,7 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {showSections && <SectionsLayer />}
+        {showSections && <SectionsLayer onSectionClick={handleSectionClick} />}
         {showMemorials && <MemorialsLayer />}
 
         {graves.map((grave) => (
