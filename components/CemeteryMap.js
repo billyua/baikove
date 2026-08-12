@@ -73,9 +73,11 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
     );
 
     if (gravesInSection.length === 0) {
-      // Only close an already-open widget; clicking an empty section while
-      // nothing is open should do nothing at all.
-      if (selectedSection !== null) setSelectedSection(null);
+      // Setting to null when it's already null is a no-op re-render-wise,
+      // so this is safe to call unconditionally — and unlike reading
+      // selectedSection here, it can't be tripped up by a stale closure
+      // (the click handler is attached once when the section layer loads).
+      setSelectedSection(null);
       return;
     }
 
