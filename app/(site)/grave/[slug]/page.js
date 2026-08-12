@@ -45,8 +45,8 @@ export default async function GravePage({ params }) {
   let mapError = null;
   try {
     mapGraves = await sql`
-      select id, slug, last_name, first_name, birth_year, death_year, occupation,
-             latitude, longitude
+      select id, slug, last_name, first_name, middle_name, birth_year, death_year, occupation,
+             grave_section, latitude, longitude
       from graves
       where latitude is not null and longitude is not null
     `;
