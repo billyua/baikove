@@ -96,11 +96,16 @@ export default async function GravePage({ params }) {
 
       {(grave.grave_section || grave.direction_text || grave.direction_scheme_url) && (
         <section style={{ margin: "24px 0" }}>
-          <h2>Як відвідати могилу</h2>
+          <h2>Примітки</h2>
 
           {grave.grave_section && <p>Ділянка: {grave.grave_section}</p>}
 
-          {grave.direction_text && <p>{grave.direction_text}</p>}
+          {grave.direction_text && (
+            <div
+              style={{ lineHeight: "1.6" }}
+              dangerouslySetInnerHTML={{ __html: grave.direction_text }}
+            />
+          )}
 
           {grave.direction_scheme_url && (
             <img
