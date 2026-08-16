@@ -29,7 +29,6 @@
   font-size: 12px;
   text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
   cursor: pointer;
-  text-align: center;
 }
 
 .memorial-label-hover {
@@ -42,4 +41,8 @@
 
 .grave-row:hover {
   background-color: rgba(147, 62, 42, 0.08);
+}
+
+.img-bordered {
+  border: 1px solid #933e2a;
 }
