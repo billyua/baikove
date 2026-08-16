@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // Reports the map's center back up every time the map is panned/zoomed.
@@ -33,7 +34,50 @@ function ViewSync({ latitude, longitude }) {
   return null;
 }
 
+const userLocationIcon = new L.DivIcon({
+  className: "",
+  html: `<div style="
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #4285F4;
+    border: 2px solid #fff;
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  "></div>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+});
+
 export default function CoordinateMapInner({ latitude, longitude, onChange }) {
+  const [showMe, setShowMe] = useState(false);
+  const [userPosition, setUserPosition] = useState(null);
+  const [locationError, setLocationError] = useState(null);
+
+  function handleShowMeChange(e) {
+    const checked = e.target.checked;
+    setShowMe(checked);
+    setLocationError(null);
+
+    if (!checked) return;
+
+    if (!navigator.geolocation) {
+      setLocationError("Геолокація не підтримується цим браузером.");
+      setShowMe(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserPosition([position.coords.latitude, position.coords.longitude]);
+      },
+      () => {
+        setLocationError("Не вдалося визначити місцезнаходження.");
+        setShowMe(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
   return (
     <div
       style={{
@@ -45,6 +89,46 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
         border: "1px solid #ccc",
       }}
     >
+      <label
+        style={{
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+          zIndex: 1000,
+          background: "rgba(248, 248, 240, 0.9)",
+          padding: "4px 8px",
+          borderRadius: "6px",
+          fontSize: "13px",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          cursor: "pointer",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+        }}
+      >
+        <input type="checkbox" checked={showMe} onChange={handleShowMeChange} />
+        Показати мене
+      </label>
+
+      {locationError && (
+        <div
+          style={{
+            position: "absolute",
+            top: "38px",
+            right: "8px",
+            zIndex: 1000,
+            background: "#fee",
+            color: "#a33",
+            padding: "4px 8px",
+            borderRadius: "6px",
+            fontSize: "12px",
+            maxWidth: "200px",
+          }}
+        >
+          {locationError}
+        </div>
+      )}
+
       <MapContainer
         center={[latitude, longitude]}
         zoom={16}
@@ -56,6 +140,10 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
         />
         <CenterTracker onChange={onChange} />
         <ViewSync latitude={latitude} longitude={longitude} />
+
+        {showMe && userPosition && (
+          <Marker position={userPosition} icon={userLocationIcon} interactive={false} />
+        )}
       </MapContainer>
 
       {/* Fixed pin, always centered over the map regardless of pan/zoom —
