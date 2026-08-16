@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ImageTextRow from "../../../components/ImageTextRow";
 
 export default function AboutPage() {
   return (
