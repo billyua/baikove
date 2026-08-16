@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function AboutPage() {
   return (
     <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
