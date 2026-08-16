@@ -9,10 +9,10 @@ export default function AboutPage() {
       <p>Як це працює:</p>
       <p>→ <Link href="/">Мапа цвинтаря</Link> містить позначки могил.</p>
         <TwoImagesWithCaptions
-        leftSrc="/about/grave-pin.png"
+        leftSrc="/about/grave-pin.png" leftBordered
         leftAlt="Позначка могили"
         leftCaption="Натисніть на позначку, щоб побачити, чия це могила."
-        rightSrc="/about/section-widget.png"
+        rightSrc="/about/section-widget.png" rightBordered
         rightAlt="Перелік до ділянки"
         rightCaption="Натисніть на ділянку, щоб побачити перелік людей, які там поховані."
       />
