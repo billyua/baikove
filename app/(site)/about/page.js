@@ -18,10 +18,10 @@ export default function AboutPage() {
       />
       <p>→ <Link href="/directory">Реєстр</Link> містить перелік поховань у вигляді таблиці.</p>
         <TwoImagesWithCaptions
-        leftSrc="/about/table-search.png"
+        leftSrc="/about/table-search.png" leftBordered
         leftAlt="Пошук поховань"
         leftCaption="Шукайте поховання за іменем, родом занять, роками життя або номером ділянки."
-        rightSrc="/about/table-sort.png"
+        rightSrc="/about/table-sort.png" rightBordered
         rightAlt="Сортування поховань"
         rightCaption="Натисніть на заголовок стовпчика, щоб відсортувати дані за ним."
       />
