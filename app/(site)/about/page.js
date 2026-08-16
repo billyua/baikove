@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ImageTextRow from "../../../components/ImageTextRow";
+import TwoImagesWithCaptions from "../../../components/TwoImagesWithCaptions";
 
 export default function AboutPage() {
   return (
@@ -8,14 +8,14 @@ export default function AboutPage() {
       <p>Мета сайту — допомогти відвідувачам Байкового кладовища знайти поховання видатних людей.</p>
       <p>Як це працює:</p>
       <p><Link href="/">Мапа цвинтаря</Link> містить позначки могил.</p>
-        {/* Image on the left, text on the right */}
-      <ImageTextRow src="/about/grave-pin.png" alt="Позначка могили">
-        <p>Натисніть на позначку, щоб побачити, чия це могила.</p>
-      </ImageTextRow>
-        {/* Image on the right, text on the left */}
-      <ImageTextRow src="/about/section-widget.png" alt="Перелік до ділянки" reverse>
-        <p>Натисніть на ділянку, щоб побачити перелік людей, які там поховані.</p>
-      </ImageTextRow>
+        <TwoImagesWithCaptions
+        leftSrc="/about/grave-pin.png"
+        leftAlt="Позначка могили"
+        leftCaption="Натисніть на позначку, щоб побачити, чия це могила."
+        rightSrc="/about/section-widget.png"
+        rightAlt="Перелік до ділянки"
+        rightCaption="Натисніть на ділянку, щоб побачити перелік людей, які там поховані."
+      />
       <ul>
       <li>Натисніть на позначку, щоб побачити, чия це могила.</li>
       <li>Натисніть на ділянку, щоб побачити перелік людей, які там поховані.</li>
