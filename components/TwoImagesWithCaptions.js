@@ -25,7 +25,7 @@ export default function TwoImagesWithCaptions({
           className={leftBordered ? "img-bordered" : undefined}
           style={{ width: "100%", borderRadius: "8px", display: "block" }}
         />
-        <p style={{ ...captionStyle, textAlign: "left" }}>{leftCaption}</p>
+        <p style={{ ...captionStyle, textAlign: "center" }}>{leftCaption}</p>
       </div>
 
       <div style={colStyle}>
@@ -35,7 +35,7 @@ export default function TwoImagesWithCaptions({
           className={rightBordered ? "img-bordered" : undefined}
           style={{ width: "100%", borderRadius: "8px", display: "block" }}
         />
-        <p style={{ ...captionStyle, textAlign: "right" }}>{rightCaption}</p>
+        <p style={{ ...captionStyle, textAlign: "center" }}>{rightCaption}</p>
       </div>
     </div>
   );
