@@ -53,6 +53,7 @@ export default async function HomePage({ searchParams }) {
           highlightSlug={highlightSlug}
         />
       )}
+            <p>Кордони ділянок і розташування поховань на мапі можуть дещо відрізнятися від реальних координат.</p>
     </main>
   );
 }
