@@ -19,7 +19,6 @@ function fieldsFromGrave(grave) {
     death_year: grave?.death_year ?? "",
     occupation: grave?.occupation || "",
     grave_section: grave?.grave_section || "",
-    direction_text: grave?.direction_text || "",
     latitude:
       grave?.latitude != null ? String(grave.latitude) : DEFAULT_LATITUDE.toFixed(6),
     longitude:
@@ -60,6 +59,9 @@ export default function GraveForm({
 
   const [fields, setFields] = useState(fieldsFromGrave(initialGrave));
   const [description, setDescription] = useState(initialGrave?.description || "");
+  const [directionText, setDirectionText] = useState(
+    initialGrave?.direction_text || ""
+  );
   const [slug, setSlug] = useState(initialGrave?.slug || "");
   // In edit mode, don't silently rewrite an already-published URL as the
   // admin edits other fields — only change it if they touch the URL field.
@@ -172,7 +174,7 @@ export default function GraveForm({
         description: description || null,
         grave_section: fields.grave_section || null,
         photo_url,
-        direction_text: fields.direction_text || null,
+        direction_text: directionText || null,
         direction_scheme_url,
         latitude: parseFloat(fields.latitude),
         longitude: parseFloat(fields.longitude),
@@ -208,6 +210,7 @@ export default function GraveForm({
       } else {
         setFields(fieldsFromGrave(null));
         setDescription("");
+        setDirectionText("");
         setSlug("");
         setSlugTouched(false);
       }
@@ -351,14 +354,10 @@ export default function GraveForm({
       </label>
 
       <label>
-        Опис маршруту від головного входу (текст)
-        <textarea
-          name="direction_text"
-          value={fields.direction_text}
-          onChange={handleChange}
-          rows={3}
-          style={inputStyle}
-        />
+        Опис маршруту від головного входу
+        <div style={{ marginTop: "4px" }}>
+          <RichTextEditor content={directionText} onChange={setDirectionText} />
+        </div>
       </label>
 
       <label key={`scheme-${formKey}`}>
