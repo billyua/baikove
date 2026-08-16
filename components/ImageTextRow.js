@@ -1,8 +1,9 @@
-export default function ImageTextRow({ src, alt, reverse = false, children }) {
+export default function ImageTextRow({ src, alt, reverse = false, bordered = false, children }) {
   const image = (
     <img
       src={src}
       alt={alt}
+      className={bordered ? "img-bordered" : undefined}
       style={{
         width: "100%",
         maxWidth: "280px",
