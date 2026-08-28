@@ -8,6 +8,8 @@ import "leaflet/dist/leaflet.css";
 import SectionsLayer from "./SectionsLayer";
 import MemorialsLayer from "./MemorialsLayer";
 import SectionWidget from "./SectionWidget";
+import MapOptionsBar from "./MapOptionsBar";
+import { userLocationIcon } from "./leafletIcons";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -65,7 +67,35 @@ function GraveMarker({ grave, isHighlighted }) {
 export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
   const [showSections, setShowSections] = useState(true);
   const [showMemorials, setShowMemorials] = useState(true);
+  const [showMe, setShowMe] = useState(false);
+  const [userPosition, setUserPosition] = useState(null);
+  const [locationError, setLocationError] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
+
+  function handleShowMeChange(e) {
+    const checked = e.target.checked;
+    setShowMe(checked);
+    setLocationError(null);
+
+    if (!checked) return;
+
+    if (!navigator.geolocation) {
+      setLocationError("Геолокація не підтримується цим браузером.");
+      setShowMe(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserPosition([position.coords.latitude, position.coords.longitude]);
+      },
+      () => {
+        setLocationError("Не вдалося визначити місцезнаходження.");
+        setShowMe(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
 
   function handleSectionClick(sectionNumber) {
     const gravesInSection = graves.filter(
@@ -109,51 +139,29 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
           maxHeight: "580px",
         }}
       >
-        <div
-          style={{
-            background: "rgba(248, 248, 240, 0.9)",
-            padding: "6px 10px",
-            borderRadius: "6px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            flexShrink: 0,
-          }}
-        >
-          <label
+        <MapOptionsBar
+          showSections={showSections}
+          onShowSectionsChange={(e) => setShowSections(e.target.checked)}
+          showMemorials={showMemorials}
+          onShowMemorialsChange={(e) => setShowMemorials(e.target.checked)}
+          showMe={showMe}
+          onShowMeChange={handleShowMeChange}
+        />
+
+        {locationError && (
+          <div
             style={{
-              fontSize: "14px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              cursor: "pointer",
+              background: "#fee",
+              color: "#a33",
+              padding: "4px 8px",
+              borderRadius: "6px",
+              fontSize: "12px",
+              maxWidth: "220px",
             }}
           >
-            <input
-              type="checkbox"
-              checked={showSections}
-              onChange={(e) => setShowSections(e.target.checked)}
-            />
-            Показати ділянки
-          </label>
-          <label
-            style={{
-              fontSize: "14px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={showMemorials}
-              onChange={(e) => setShowMemorials(e.target.checked)}
-            />
-            Показати об&apos;єкти
-          </label>
-        </div>
+            {locationError}
+          </div>
+        )}
 
         {selectedSection && sectionGraves.length > 0 && (
           <SectionWidget
@@ -176,6 +184,9 @@ export default function CemeteryMap({ graves, center, zoom, highlightSlug }) {
 
         {showSections && <SectionsLayer onSectionClick={handleSectionClick} />}
         {showMemorials && <MemorialsLayer />}
+        {showMe && userPosition && (
+          <Marker position={userPosition} icon={userLocationIcon} interactive={false} />
+        )}
 
         {graves.map((grave) => (
           <GraveMarker

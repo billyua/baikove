@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import SectionsLayer from "./SectionsLayer";
+import MemorialsLayer from "./MemorialsLayer";
+import MapOptionsBar from "./MapOptionsBar";
+import { userLocationIcon } from "./leafletIcons";
 
 // Reports the map's center back up every time the map is panned/zoomed.
 function CenterTracker({ onChange }) {
@@ -34,21 +37,9 @@ function ViewSync({ latitude, longitude }) {
   return null;
 }
 
-const userLocationIcon = new L.DivIcon({
-  className: "",
-  html: `<div style="
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #4285F4;
-    border: 2px solid #fff;
-    box-shadow: 0 0 4px rgba(0,0,0,0.5);
-  "></div>`,
-  iconSize: [14, 14],
-  iconAnchor: [7, 7],
-});
-
 export default function CoordinateMapInner({ latitude, longitude, onChange }) {
+  const [showSections, setShowSections] = useState(true);
+  const [showMemorials, setShowMemorials] = useState(true);
   const [showMe, setShowMe] = useState(false);
   const [userPosition, setUserPosition] = useState(null);
   const [locationError, setLocationError] = useState(null);
@@ -89,45 +80,42 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
         border: "1px solid #ccc",
       }}
     >
-      <label
+      <div
         style={{
           position: "absolute",
           top: "8px",
           right: "8px",
           zIndex: 1000,
-          background: "rgba(248, 248, 240, 0.9)",
-          padding: "4px 8px",
-          borderRadius: "6px",
-          fontSize: "13px",
           display: "flex",
-          alignItems: "center",
+          flexDirection: "column",
+          alignItems: "flex-end",
           gap: "6px",
-          cursor: "pointer",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
         }}
       >
-        <input type="checkbox" checked={showMe} onChange={handleShowMeChange} />
-        Показати мене
-      </label>
+        <MapOptionsBar
+          showSections={showSections}
+          onShowSectionsChange={(e) => setShowSections(e.target.checked)}
+          showMemorials={showMemorials}
+          onShowMemorialsChange={(e) => setShowMemorials(e.target.checked)}
+          showMe={showMe}
+          onShowMeChange={handleShowMeChange}
+        />
 
-      {locationError && (
-        <div
-          style={{
-            position: "absolute",
-            top: "38px",
-            right: "8px",
-            zIndex: 1000,
-            background: "#fee",
-            color: "#a33",
-            padding: "4px 8px",
-            borderRadius: "6px",
-            fontSize: "12px",
-            maxWidth: "200px",
-          }}
-        >
-          {locationError}
-        </div>
-      )}
+        {locationError && (
+          <div
+            style={{
+              background: "#fee",
+              color: "#a33",
+              padding: "4px 8px",
+              borderRadius: "6px",
+              fontSize: "12px",
+              maxWidth: "200px",
+            }}
+          >
+            {locationError}
+          </div>
+        )}
+      </div>
 
       <MapContainer
         center={[latitude, longitude]}
@@ -141,6 +129,8 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
         <CenterTracker onChange={onChange} />
         <ViewSync latitude={latitude} longitude={longitude} />
 
+        {showSections && <SectionsLayer />}
+        {showMemorials && <MemorialsLayer />}
         {showMe && userPosition && (
           <Marker position={userPosition} icon={userLocationIcon} interactive={false} />
         )}
