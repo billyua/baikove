@@ -46,3 +46,13 @@
 .img-bordered {
   border: 1px solid #933e2a;
 }
+
+.mobile-only-option {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only-option {
+    display: flex;
+  }
+}
