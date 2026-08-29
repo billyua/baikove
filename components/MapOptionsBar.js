@@ -20,7 +20,7 @@ export default function MapOptionsBar({
         flexShrink: 0,
       }}
     >
-      <label style={optionStyle}>
+      <label className="map-option">
         <input
           type="checkbox"
           checked={showSections}
@@ -29,7 +29,7 @@ export default function MapOptionsBar({
         ділянки
       </label>
 
-      <label style={optionStyle}>
+      <label className="map-option">
         <input
           type="checkbox"
           checked={showMemorials}
@@ -39,17 +39,10 @@ export default function MapOptionsBar({
       </label>
 
       {/* Shown only on narrow (mobile) viewports — see .mobile-only-option in globals.css */}
-      <label className="mobile-only-option" style={optionStyle}>
-        <input type="checkbox" checked={showMe} onChange={onShowMeChange} />я
+      <label className="map-option mobile-only-option">
+        <input type="checkbox" checked={showMe} onChange={onShowMeChange} />
+        ви
       </label>
     </div>
   );
 }
-
-const optionStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "6px",
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-};
