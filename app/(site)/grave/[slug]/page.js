@@ -124,7 +124,7 @@ export default async function GravePage({ params }) {
 
         {grave.photo_url && (
         <>
-        <p> </p>
+        <p dangerouslySetInnerHTML={{ __html: "&nbsp;" }} />
         <h2>Фото могили</h2>
         <img
           src={grave.photo_url}
