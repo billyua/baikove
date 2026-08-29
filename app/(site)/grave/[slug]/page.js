@@ -132,7 +132,8 @@ export default async function GravePage({ params }) {
             width: "100%",
             maxWidth: "500px",
             borderRadius: "8px",
-            margin: "20px 0",
+            margin: "0px 0",
+            align: "center",
           }}
         />
       </>
