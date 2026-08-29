@@ -124,16 +124,17 @@ export default async function GravePage({ params }) {
 
         {grave.photo_url && (
         <>
+        <p></p>
         <h2>Фото могили</h2>
         <img
           src={grave.photo_url}
           alt={`Фото могили ${fullName}`}
           style={{
+            display: "block",
+            margin: "0 auto", 
             width: "100%",
             maxWidth: "500px",
             borderRadius: "8px",
-            margin: "0px 0",
-            align: "center",
           }}
         />
       </>
