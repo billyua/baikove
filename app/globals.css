@@ -47,12 +47,20 @@
   border: 1px solid #933e2a;
 }
 
-.mobile-only-option {
+.map-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+label.mobile-only-option {
   display: none;
 }
 
 @media (max-width: 768px) {
-  .mobile-only-option {
+  label.mobile-only-option {
     display: flex;
   }
 }
