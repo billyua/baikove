@@ -83,7 +83,7 @@ export default async function GravePage({ params }) {
 
       {(grave.grave_section || grave.direction_text || grave.direction_scheme_url) && (
         <section style={{ margin: "24px 0" }}>
-          <h2>Як знайти могилу</h2>
+          <h2>Про місце поховання</h2>
 
           {grave.grave_section && <p>Ділянка: {grave.grave_section}</p>}
 
