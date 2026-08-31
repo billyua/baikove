@@ -1,4 +1,5 @@
 import { sql } from "../../../lib/db";
+import { sortGraves } from "../../../lib/sortGraves";
 import GravesTable from "../../../components/GravesTable";
 import Pagination from "../../../components/Pagination";
 import DirectorySearch from "../../../components/DirectorySearch";
@@ -8,21 +9,22 @@ export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 50;
 
-// Whitelist of columns that may be used for sorting — never build the
-// ORDER BY clause from unvalidated input.
-const ALLOWED_SORT_COLUMNS = {
-  last_name: "last_name",
-  first_name: "first_name",
-  middle_name: "middle_name",
-  birth_year: "birth_year",
-  death_year: "death_year",
-  occupation: "occupation",
-  grave_section: "grave_section",
-};
+// Whitelist of columns that may be used for sorting.
+const ALLOWED_SORT_COLUMNS = new Set([
+  "last_name",
+  "first_name",
+  "middle_name",
+  "birth_year",
+  "death_year",
+  "occupation",
+  "grave_section",
+]);
 
 export default async function DirectoryPage({ searchParams }) {
   const q = (searchParams?.q || "").trim();
-  const sortColumn = ALLOWED_SORT_COLUMNS[searchParams?.sort] || "last_name";
+  const sortColumn = ALLOWED_SORT_COLUMNS.has(searchParams?.sort)
+    ? searchParams.sort
+    : "last_name";
   const sortDir = searchParams?.dir === "desc" ? "desc" : "asc";
   const requestedPage = Math.max(1, parseInt(searchParams?.page, 10) || 1);
 
@@ -35,26 +37,13 @@ export default async function DirectoryPage({ searchParams }) {
   try {
     const pattern = `%${q}%`;
 
-    const countRows = await sql`
-      select count(*) as count from graves
-      where last_name ilike ${pattern}
-         or first_name ilike ${pattern}
-         or middle_name ilike ${pattern}
-         or occupation ilike ${pattern}
-         or grave_section ilike ${pattern}
-         or cast(birth_year as text) ilike ${pattern}
-         or cast(death_year as text) ilike ${pattern}
-    `;
-    totalCount = Number(countRows[0].count);
-    totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-    // Clamp in case a filter shrank the result set below the requested page.
-    currentPage = Math.min(requestedPage, totalPages);
-    const offset = (currentPage - 1) * PAGE_SIZE;
-
-    // sortColumn/sortDir come from a fixed whitelist above, so it's safe to
-    // splice them in as raw SQL via sql.unsafe() — search/pagination values
-    // stay fully parameterized.
-    graves = await sql`
+    // Filtering stays in SQL (that part of Postgres's default collation is
+    // fine for substring matching). Sorting does NOT stay in SQL — its
+    // default collation doesn't follow correct Ukrainian alphabetical order,
+    // and has no concept of treating embedded numbers (like in "52a")
+    // numerically. So: fetch every matching row, unsorted, then sort in
+    // JavaScript using the Ukrainian locale, then paginate afterward.
+    const allMatching = await sql`
       select id, slug, last_name, first_name, middle_name, birth_year, death_year,
              occupation, grave_section
       from graves
@@ -65,9 +54,17 @@ export default async function DirectoryPage({ searchParams }) {
          or grave_section ilike ${pattern}
          or cast(birth_year as text) ilike ${pattern}
          or cast(death_year as text) ilike ${pattern}
-      order by ${sql.unsafe(sortColumn)} ${sql.unsafe(sortDir)}, id asc
-      limit ${PAGE_SIZE} offset ${offset}
     `;
+
+    const sorted = sortGraves(allMatching, sortColumn, sortDir);
+
+    totalCount = sorted.length;
+    totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+    // Clamp in case a filter shrank the result set below the requested page.
+    currentPage = Math.min(requestedPage, totalPages);
+    const offset = (currentPage - 1) * PAGE_SIZE;
+
+    graves = sorted.slice(offset, offset + PAGE_SIZE);
   } catch (err) {
     error = err.message;
   }
