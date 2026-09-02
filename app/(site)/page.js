@@ -12,6 +12,8 @@ export default async function HomePage({ searchParams }) {
   const highlightSlug = searchParams?.highlight ?? null;
 
   let graves = [];
+  let totalCount = 0;
+  let randomGrave = null;
   let error = null;
 
   try {
@@ -21,6 +23,17 @@ export default async function HomePage({ searchParams }) {
       from graves
       where latitude is not null and longitude is not null
     `;
+
+    const countRows = await sql`select count(*) as count from graves`;
+    totalCount = Number(countRows[0].count);
+
+    const randomRows = await sql`
+      select slug, last_name, first_name, middle_name
+      from graves
+      order by random()
+      limit 1
+    `;
+    randomGrave = randomRows[0] || null;
   } catch (err) {
     error = err.message;
   }
@@ -34,12 +47,22 @@ export default async function HomePage({ searchParams }) {
     zoom = 20;
   }
 
+  const randomFullName = randomGrave
+    ? [randomGrave.last_name, randomGrave.first_name, randomGrave.middle_name]
+        .filter(Boolean)
+        .join(" ")
+    : null;
+
   return (
     <main style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
       <p>
         <Link href="/directory">До реєстру →</Link>
       </p>
       <h1>Мапа поховань</h1>
+
+      <p style={{ color: "#666", fontSize: "14px" }}>
+        Усього записів: {totalCount}
+      </p>
 
       {error && (
         <p style={{ color: "red" }}>Помилка завантаження даних: {error}</p>
@@ -53,7 +76,14 @@ export default async function HomePage({ searchParams }) {
           highlightSlug={highlightSlug}
         />
       )}
-            <p style={{ fontSize: "13px" }}>Кордони ділянок і розташування поховань на мапі можуть дещо відрізнятися від реальних координат.</p>
+	  <p style={{ fontSize: "13px" }}>Кордони ділянок і розташування поховань на мапі можуть дещо відрізнятися від реальних координат.</p>
+
+      {!error && randomGrave && (
+        <p style={{ marginTop: "16px" }}>
+          Випадкове ім&apos;я:{" "}
+          <Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link>
+        </p>
+      )}
     </main>
   );
 }
