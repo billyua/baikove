@@ -119,7 +119,7 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
 
       <MapContainer
         center={[latitude, longitude]}
-        zoom={16}
+        zoom={20}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
