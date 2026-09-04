@@ -25,12 +25,6 @@ export default async function AboutPage() {
     : null;
 
   return (
-    // ...your existing JSX
-  );
-}
-
-export default function AboutPage() {
-  return (
     <main style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
       <h1>Про сайт</h1>
       <p>Мета сайту — допомогти відвідувачам Байкового кладовища знайти поховання видатних людей.</p>
@@ -54,12 +48,12 @@ export default function AboutPage() {
         rightCaption="Натисніть на заголовок стовпчика, щоб відсортувати дані за ним."
       />
       <p>→ Індивідуальні сторінки поховань містять довідкову інформацію про людину та підсвічують її могилу на мапі.</p>
-    </main>
-    {randomGrave && (
+          {randomGrave && (
   <p>
     Наприклад:{" "}
     <Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link>
   </p>
-    )}
+)}
+    </main>
   );
 }
