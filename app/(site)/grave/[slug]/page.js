@@ -117,7 +117,7 @@ export default async function GravePage({ params }) {
           <MapLoader
             graves={mapGraves}
             center={[Number(grave.latitude), Number(grave.longitude)]}
-            zoom={20}
+            zoom={19}
             highlightSlug={grave.slug}
           />
         )}
