@@ -55,7 +55,9 @@ export default function AboutPage() {
       />
       <p>→ Індивідуальні сторінки поховань містять довідкову інформацію про людину та підсвічують її могилу на мапі.</p>
       <p>Наприклад:</p>
-      <p><Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link></p>
+      {randomGrave && (
+        <p><Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link></p>
+      )}
     </main>
   );
 }
