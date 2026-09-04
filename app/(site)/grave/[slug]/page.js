@@ -121,6 +121,7 @@ export default async function GravePage({ params }) {
             highlightSlug={grave.slug}
           />
         )}
+<p style={{ fontSize: "13px" }}>Кордони ділянок і розташування поховань на мапі можуть дещо відрізнятися від реальних координат.</p>
 
         {grave.photo_url && (
         <>
