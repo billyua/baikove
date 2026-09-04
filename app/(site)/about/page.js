@@ -1,5 +1,33 @@
 import Link from "next/link";
 import TwoImagesWithCaptions from "../../../components/TwoImagesWithCaptions";
+import { sql } from "../../../lib/db";
+
+export const dynamic = "force-dynamic";
+
+export default async function AboutPage() {
+  let randomGrave = null;
+  try {
+    const rows = await sql`
+      select slug, last_name, first_name, middle_name
+      from graves
+      order by random()
+      limit 1
+    `;
+    randomGrave = rows[0] || null;
+  } catch (err) {
+    // fail quietly — the rest of the About page should still render
+  }
+
+  const randomFullName = randomGrave
+    ? [randomGrave.last_name, randomGrave.first_name, randomGrave.middle_name]
+        .filter(Boolean)
+        .join(" ")
+    : null;
+
+  return (
+    // ...your existing JSX
+  );
+}
 
 export default function AboutPage() {
   return (
@@ -26,6 +54,8 @@ export default function AboutPage() {
         rightCaption="Натисніть на заголовок стовпчика, щоб відсортувати дані за ним."
       />
       <p>→ Індивідуальні сторінки поховань містять довідкову інформацію про людину та підсвічують її могилу на мапі.</p>
+      <p>Наприклад:</p>
+      <p><Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link></p>
     </main>
   );
 }
