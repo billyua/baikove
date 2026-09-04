@@ -54,12 +54,12 @@ export default function AboutPage() {
         rightCaption="Натисніть на заголовок стовпчика, щоб відсортувати дані за ним."
       />
       <p>→ Індивідуальні сторінки поховань містять довідкову інформацію про людину та підсвічують її могилу на мапі.</p>
-      {randomGrave && (
+    </main>
+    {randomGrave && (
   <p>
     Наприклад:{" "}
     <Link href={`/grave/${randomGrave.slug}`}>{randomFullName}</Link>
   </p>
-)}
-    </main>
+    )}
   );
 }
