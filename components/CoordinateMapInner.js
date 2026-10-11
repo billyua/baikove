@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  CircleMarker,
+  Tooltip,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import SectionsLayer from "./SectionsLayer";
 import MemorialsLayer from "./MemorialsLayer";
@@ -37,7 +45,22 @@ function ViewSync({ latitude, longitude }) {
   return null;
 }
 
-export default function CoordinateMapInner({ latitude, longitude, onChange }) {
+// Style for the dots marking *other* graves. Deliberately different from the
+// big blue center pin (the grave being placed) and from the maroon memorial dots.
+const otherGraveStyle = {
+  radius: 5,
+  color: "#ffffff",
+  weight: 1.5,
+  fillColor: "#444444",
+  fillOpacity: 0.9,
+};
+
+export default function CoordinateMapInner({
+  latitude,
+  longitude,
+  onChange,
+  graves = [],
+}) {
   const [showSections, setShowSections] = useState(true);
   const [showMemorials, setShowMemorials] = useState(true);
   const [showMe, setShowMe] = useState(false);
@@ -119,7 +142,7 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
 
       <MapContainer
         center={[latitude, longitude]}
-        zoom={20}
+        zoom={16}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
@@ -133,6 +156,23 @@ export default function CoordinateMapInner({ latitude, longitude, onChange }) {
 
         {showSections && <SectionsLayer />}
         {showMemorials && <MemorialsLayer />}
+        {graves.map((grave) => (
+          <CircleMarker
+            key={grave.id}
+            center={[Number(grave.latitude), Number(grave.longitude)]}
+            pathOptions={otherGraveStyle}
+          >
+            {/* Hover-only name label: no click action, so there's no risk of
+                navigating away from a half-filled form by accident. */}
+            <Tooltip direction="top" offset={[0, -4]}>
+              {[grave.last_name, grave.first_name].filter(Boolean).join(" ")}
+              {grave.birth_year || grave.death_year
+                ? ` (${grave.birth_year ?? ""}–${grave.death_year ?? ""})`
+                : ""}
+            </Tooltip>
+          </CircleMarker>
+        ))}
+
         {showMe && userPosition && (
           <Marker position={userPosition} icon={userLocationIcon} interactive={false} />
         )}

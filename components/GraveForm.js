@@ -53,6 +53,7 @@ export default function GraveForm({
   mode = "create",
   initialGrave = null,
   currentSlug = null,
+  otherGraves = [],
 }) {
   const router = useRouter();
   const isEdit = mode === "edit";
@@ -412,6 +413,7 @@ export default function GraveForm({
               latitude={mapLatitude}
               longitude={mapLongitude}
               onChange={handleMapMove}
+              graves={otherGraves}
             />
             <span style={{ fontSize: "13px", color: "#666" }}>
               Перемістіть карту, щоб позначка в центрі вказувала на могилу.
