@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession } from "../../../lib/session";
+import { sql } from "../../../lib/db";
 import GraveForm from "../../../components/GraveForm";
 import LogoutButton from "../../../components/LogoutButton";
 
@@ -10,6 +11,20 @@ export default async function AdminPage() {
 
   if (!session.isLoggedIn) {
     redirect("/admin/login");
+  }
+
+  // Existing graves, shown as small dots on the coordinate-picker map so the
+  // admin can see what's already nearby when placing a new one.
+  let otherGraves = [];
+  try {
+    otherGraves = await sql`
+      select id, slug, last_name, first_name, birth_year, death_year,
+             latitude, longitude
+      from graves
+      where latitude is not null and longitude is not null
+    `;
+  } catch (err) {
+    // The form still works without the extra dots, so fail quietly.
   }
 
   return (
@@ -30,7 +45,7 @@ export default async function AdminPage() {
           <LogoutButton />
         </div>
       </div>
-      <GraveForm mode="create" />
+      <GraveForm mode="create" otherGraves={otherGraves} />
     </main>
   );
 }
